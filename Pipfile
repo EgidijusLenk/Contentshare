@@ -8,6 +8,8 @@ fastapi = {extras = ["uvicorn"], version = "*"}
 sqlmodel = "*"
 python-jose = {extras = ["cryptography"], version = "*"}
 passlib = {extras = ["bcrypt"], version = "*"}
+alembic = "*"
+psycopg2-binary = "*"
 
 [dev-packages]
 
