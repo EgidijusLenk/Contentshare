@@ -4,6 +4,7 @@ from typing import List, Optional
 from pydantic import BaseModel
 
 #Content schemas:
+
 class Content(BaseModel):
     id: Optional[int] = None
     owner_id: Optional[int] = None
@@ -31,10 +32,11 @@ class ContentUpdate(BaseModel):
     backbutton_url: Optional[str] = None
     display_ad_url: Optional[str] = None
 
-class ContentState(BaseModel): #got to chech if current user is creator if this content
+class ContentState(BaseModel): #got to check if current user is creator if this content
     active: bool
 
 #User schemas:
+
 class UserCreate(BaseModel):
     user: str
     email: str
@@ -44,11 +46,13 @@ class UserRead(BaseModel): #response_model=UserRead
     id: int
     user: Optional[str] = None
     email: str
+    hashed_password: Optional[str] = None
     active: bool
-    contents: List[Content] = []
+    content: List[Content] = []
 
     class Config:
         orm_mode = True
+
 
 class UserUpdate(BaseModel): #for use with @app.patch method
     user: Optional[str] = None

@@ -10,6 +10,7 @@ python-jose = {extras = ["cryptography"], version = "*"}
 passlib = {extras = ["bcrypt"], version = "*"}
 alembic = "*"
 psycopg2-binary = "*"
+python-multipart = "*"
 
 [dev-packages]
 
