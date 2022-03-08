@@ -1,6 +1,5 @@
 from sqlalchemy.orm import Session
 
-from security import get_password_hash, verify_password
 import models, schemas
 
 
@@ -37,3 +36,6 @@ def create_user_item(db: Session, item: schemas.ContentCreate):
     db.commit()
     db.refresh(db_item)
     return db_item
+
+def get_content_by_shortened_url(db: Session, shortened_url):
+    return db.query(models.Content).filter(models.Content.shortened_url == shortened_url).first()

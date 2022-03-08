@@ -11,6 +11,9 @@ passlib = {extras = ["bcrypt"], version = "*"}
 alembic = "*"
 psycopg2-binary = "*"
 python-multipart = "*"
+jinja2 = "*"
+requests = "*"
+beautifulsoup4 = "*"
 
 [dev-packages]
 

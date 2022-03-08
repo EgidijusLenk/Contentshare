@@ -42,13 +42,13 @@ class UserCreate(BaseModel):
     email: str
     password: str
 
-class UserRead(BaseModel): #response_model=UserRead
+class UserRead(BaseModel): 
     id: int
     user: Optional[str] = None
     email: str
     hashed_password: Optional[str] = None
     active: bool
-    content: List[Content] = []
+    contents: List[Content] = []
 
     class Config:
         orm_mode = True
