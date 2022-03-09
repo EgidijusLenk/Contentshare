@@ -1,19 +1,28 @@
 from typing import Dict, List
 
-from fastapi.templating import Jinja2Templates
 from fastapi import Depends, FastAPI, Request, HTTPException, status
+from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
-from sqlalchemy.orm import Session
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordRequestForm
-import crud, models, schemas
+from sqlalchemy.orm import Session
+
+import crud, schemas
 from database import get_db
 from utils import id_generator, get_metadata
+from security import oauth2_scheme, authenticate_user, create_token, get_current_user, get_password_hash
 
 templates = Jinja2Templates(directory="templates")
 app = FastAPI()
 
-#---security
-from security import authenticate_user, create_token, get_current_user, oauth2_scheme, get_password_hash
+#CORS - now allowed all, but need to change.
+origins = ['*']
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],)
 
 @app.post('/token')
 async def generate_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
@@ -23,13 +32,9 @@ async def generate_token(form_data: OAuth2PasswordRequestForm = Depends(), db: S
     token = create_token(user)
     return {"access_token": token, "token_type": "bearer"}
 
-
-
-
 @app.get("/users/me", response_model=schemas.UserRead)
 async def get_user(user: schemas.UserRead = Depends(get_current_user), db: Session = Depends(get_db)):
     #tai cia jau turiu esamo vartotojo objekta, o "Depends(get_current_user)" galiu pernaudot kitiems endpointams
-    
     person: schemas.UserRead = crud.get_user_by_id(db=db, user_id=user.id)
     return person
 
@@ -37,18 +42,8 @@ async def get_user(user: schemas.UserRead = Depends(get_current_user), db: Sessi
 async def index(token: str = Depends(oauth2_scheme)):
     return {'the_token' : token}
 
-
-
-
-
-
-#---/security
-
-
-
-
 @app.post("/users/", response_model=schemas.UserRead)
-def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
+async def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     print(f"\n \n \n username is: {user}\n \n")
     db_user = crud.get_user_by_email(db, email=user.email)
     if db_user:
@@ -56,23 +51,18 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     user.password = get_password_hash(user.password) #hashing the password
     return crud.create_user(db=db, user=user)
 
-
-
 @app.post("/content/", response_model=schemas.Content)
-def create_content(item: schemas.ContentCreate, db: Session = Depends(get_db), user: schemas.UserRead = Depends(get_current_user)):
+async def create_content(item: schemas.ContentCreate, db: Session = Depends(get_db), user: schemas.UserRead = Depends(get_current_user)):
     item.owner_id = user.id
     #gotto make sure shortened url is unique
     item.shortened_url = id_generator() #shortening the url
     item.content_metadata = get_metadata(item.content_url)
     return crud.create_user_item(db=db, item=item)
 
-
 #return content data prelander
-
 @app.get("/g/{unique_string}", response_class=HTMLResponse)
 async def prelander(request: Request, unique_string: str, db: Session = Depends(get_db)):
     content: schemas.Content = crud.get_content_by_shortened_url(db, unique_string)
-    # listToStr = ' '.join([str(elem) for elem in metadata_tags])
     print(content)
     return templates.TemplateResponse("item.html", {"request": request, 
     "content_url": content.content_url,
@@ -80,3 +70,8 @@ async def prelander(request: Request, unique_string: str, db: Session = Depends(
     "backbutton_url": content.backbutton_url,
     "display_ad_url": content.display_ad_url
     })
+
+@app.patch("/content/{item_id}", response_model=schemas.Content)
+async def update_item(item_id: str, item: schemas.ContentUpdate, db: Session = Depends(get_db), user: schemas.UserRead = Depends(get_current_user)):
+    return crud.update_item(item_id, item, db, user)
+
