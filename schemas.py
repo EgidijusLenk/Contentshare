@@ -22,7 +22,7 @@ class Content(BaseModel):
 class ContentCreate(BaseModel):
     owner_id: Optional[int] = None
     content_url: str
-    content_metadata: Optional[str] = None # need function to autoscrape metadata
+    content_metadata: Optional[str] = None
     shortened_url: Optional[str] = None
     backbutton_url: Optional[str] = None
     display_ad_url: Optional[str] = None

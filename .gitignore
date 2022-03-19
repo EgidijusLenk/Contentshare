@@ -110,7 +110,21 @@ venv/
 ENV/
 env.bak/
 venv.bak/
-frontend/
+
+# react
+/frontend/app/node_modules/
+/frontend/app/build
+/frontend/app/.gitignore
+/frontend/app/README.md
+/frontend/app/package-lock.json
+/frontend/app/package.json
+/frontend/node_modules/
+/frontend/package-lock.json
+/frontend/package.json
+
+
+
+
 # Spyder project settings
 .spyderproject
 .spyproject
