@@ -28,9 +28,13 @@ class ContentCreate(BaseModel):
     display_ad_url: Optional[str] = None
 
 class ContentUpdate(BaseModel):
-    content_url: str
+    content_url: Optional[str] = None
     backbutton_url: Optional[str] = None
     display_ad_url: Optional[str] = None
+    active: Optional[bool] = None
+    class Config:
+        orm_mode = True
+
 
 class ContentState(BaseModel): #got to check if current user is creator if this content
     active: bool
