@@ -1,28 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState,  } from 'react';
 import axios from 'axios';
 
-function CreateContent() {
-    const [content_url, setContenturl] = useState();
+function CreateContent({updateTable}) {
+    const [content_url, setContenturl] = useState("");
     const headers = {
         'Content-Type': 'application/json',
         'accept': 'application/json',
         'Authorization': `Bearer`
       }
       function handleSubmit(event) {
-        const headers = {
-            'Content-accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer`
-          }
+        
         headers["Authorization"] = `Bearer ${localStorage.getItem("token")}`  
         event.preventDefault();
         axios.post("http://localhost:8000/content", {"content_url":content_url}, {headers: headers})
         .then(res => alert(`Content created, short link: ${res.data.shortened_url}`))
+        .then(updateTable)
         .catch(err => alert(`${JSON.stringify(err.response.data.detail)}`))  
       }
       function handleInputChange(event) {
         setContenturl(event.target.value)
       }
+      
+      
     return (
         <div>
             <span> Create content</span>

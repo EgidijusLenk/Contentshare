@@ -1,5 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
+import {
+    Navigate,
+  } from "react-router-dom";
 
 function LoginUser() {
     const [inputs, setInputs] = useState({"username":"","password":"", "grant_type": "password"});
@@ -20,9 +23,10 @@ function LoginUser() {
         .then(function (res) {
             setToken(res.data.access_token);
             localStorage.setItem("token", res.data.access_token);
-            console.log(`${res.data.access_token}`)})
-        .catch(err => alert(`${JSON.stringify(err.response.data.detail)}`))
+            console.log(`${res.data.access_token} TTTT`) })
+
         
+        .catch(err => alert(`${JSON.stringify(err.response.data.detail)}`))
         //gotto redirect user to dashboard
     }
     function handleInputChange(event) {
@@ -35,6 +39,9 @@ function LoginUser() {
     return (
         <div>
             <span> Login user</span>
+            {token && (
+          <Navigate to="/dashboard" replace={true} />
+        )}
             <form onSubmit={handleSubmit}>
                 <label>
                 Username:

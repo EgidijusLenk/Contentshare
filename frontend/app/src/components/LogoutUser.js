@@ -1,16 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import {
+    Navigate,
+  } from "react-router-dom";
 
 function LogoutUser() {
-    function logOut(){
-        localStorage.removeItem("token")
-        //gotto redirect user to main
-    }
+     localStorage.removeItem("token")
+    //gotto redirect user to main
+
     return (
-        <div>
-            <button onClick={logOut}>Log out</button>
-        </div>
+        <div> <Navigate to="/login" replace={true} /></div>
     )
+
+// useEffect(navigate("/login"))
+    
 
 }
 

@@ -9,7 +9,7 @@ import re
 import requests
 from bs4 import BeautifulSoup
 def get_metadata(url):
-
+    #turiu suhandlint errors, pvz jei nera tokio url - nepadaryta
     r = requests.get(url)
 
     website = BeautifulSoup(r.text, "lxml")
