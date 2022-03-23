@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-
 import CreateContent from './CreateContent';
+import { AuthContext } from "../App";
 function Dashboard() {
+    const { state: authState } = React.useContext(AuthContext);
+    const { dispatch } = React.useContext(AuthContext);
     const [items, setItems] = useState([])
     const [user, setUser] = useState([])
     const headers = {
@@ -20,7 +22,12 @@ function Dashboard() {
     }
     useEffect(showContent, [CreateContent]);
     if (!items) return null;
-
+    
+    function logOut(){
+        dispatch({
+            type: "LOGOUT",
+        })
+    }
   
     const domain = window.location.hostname
     return (
@@ -30,8 +37,12 @@ function Dashboard() {
             {user.length >= 0 && <button onClick={showContent}>Show content</button> }
             <br/>
             
-              Your username: {user.user}
+              Hello {user.user},
             <br/>
+            {authState.isAuthenticated && 
+             <button onClick={logOut}>Logout</button>}
+            <br/>
+            
             <br/>
       <CreateContent updateTable={showContent}/>
             <ul>
@@ -41,6 +52,7 @@ function Dashboard() {
                     })}
                
             </ul>
+            
         </div>
 
     )

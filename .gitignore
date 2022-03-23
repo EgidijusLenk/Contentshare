@@ -116,8 +116,8 @@ venv.bak/
 /frontend/app/build
 /frontend/app/.gitignore
 /frontend/app/README.md
-/frontend/app/package-lock.json
-/frontend/app/package.json
+# /frontend/app/package-lock.json
+# /frontend/app/package.json
 /frontend/node_modules/
 /frontend/package-lock.json
 /frontend/package.json

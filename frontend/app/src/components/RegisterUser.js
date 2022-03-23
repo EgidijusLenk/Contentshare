@@ -19,8 +19,6 @@ function RegisterUser() {
         const name = event.target.name;
         const value = event.target.value;
         setInputs(values => ({...values, [name]: value}))
-        console.log(`${event.target.value} zzzzzz`)
-        console.log(`${JSON.stringify(inputs)} aaaaaa`)
     }
     return (
         <div>

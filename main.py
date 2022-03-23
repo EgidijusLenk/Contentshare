@@ -30,7 +30,7 @@ async def generate_token(form_data: OAuth2PasswordRequestForm = Depends(), db: S
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
     token = create_token(user)
-    return {"access_token": token, "token_type": "bearer"}
+    return {"access_token": token, "token_type": "bearer", "user": user.user}
 
 @app.get("/users/me", response_model=schemas.UserRead)
 async def get_user(user: schemas.UserRead = Depends(get_current_user), db: Session = Depends(get_db)):

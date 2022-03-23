@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import {
-    Navigate,
-  } from "react-router-dom";
-
+import { Navigate, } from "react-router-dom";
+import { AuthContext } from "../App";
 function LoginUser() {
+    const { dispatch } = React.useContext(AuthContext);
     const [inputs, setInputs] = useState({"username":"","password":"", "grant_type": "password"});
     const [token, setToken] = useState("");
     function handleSubmit(event) {
@@ -21,10 +20,12 @@ function LoginUser() {
       
         axios.post("http://localhost:8000/token", loginFormData, {headers: headers})
         .then(function (res) {
-            setToken(res.data.access_token);
-            localStorage.setItem("token", res.data.access_token);
-            console.log(`${res.data.access_token} TTTT`) })
-
+            dispatch({
+                type: "LOGIN",
+                payload: res.data
+            })
+        })
+    
         
         .catch(err => alert(`${JSON.stringify(err.response.data.detail)}`))
         //gotto redirect user to dashboard
@@ -39,9 +40,9 @@ function LoginUser() {
     return (
         <div>
             <span> Login user</span>
-            {token && (
-          <Navigate to="/dashboard" replace={true} />
-        )}
+            {/* {token && (
+          <Navigate to="/dashboard" replace={true} /> */}
+        
             <form onSubmit={handleSubmit}>
                 <label>
                 Username:
@@ -53,6 +54,7 @@ function LoginUser() {
                 </label><br/>
                 <button type="submit">Submit</button>   
             </form> 
+              
         </div>
     )
 
