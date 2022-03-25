@@ -46,6 +46,7 @@ async def index(token: str = Depends(oauth2_scheme)):
 async def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     print(f"\n \n \n username is: {user}\n \n")
     db_user = crud.get_user_by_email(db, email=user.email)
+    #got to make function that checks by username also
     if db_user:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email taken")
     user.password = get_password_hash(user.password) #hashing the password

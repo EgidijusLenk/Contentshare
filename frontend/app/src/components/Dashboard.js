@@ -7,6 +7,7 @@ function Dashboard() {
     const { dispatch } = React.useContext(AuthContext);
     const [items, setItems] = useState([])
     const [user, setUser] = useState([])
+    const domain = window.location.hostname
     const headers = {
         'Content-Type': 'application/json',
         'accept': 'application/json',
@@ -28,31 +29,69 @@ function Dashboard() {
             type: "LOGOUT",
         })
     }
-  
-    const domain = window.location.hostname
+    function copyToClipboard(e) {
+        console.log(`${domain}/${e}`);
+        navigator.clipboard.writeText(`https://${domain}/g/${e}`);
+    }
+    function editItem(e) {
+        return
+    }
     return (
         <div>
-            Dashboard
+            <div className="container-sm">
+            {/* <div className="row"> */}
+            
             <br/>
             {user.length >= 0 && <button onClick={showContent}>Show content</button> }
             <br/>
             
+            <div className='row'>    
+            <div className="col-auto">
+            <div className="col-auto">
+
               Hello {user.user},
-            <br/>
-            {authState.isAuthenticated && 
-             <button onClick={logOut}>Logout</button>}
-            <br/>
             
-            <br/>
+              </div>
+
+            {authState.isAuthenticated && 
+             <button type="button" className="btn-sm btn-primary" onClick={logOut}>Logout</button>}
+             </div>
+            </div>
+            
+
+            <div className="col col-lg-10">
+
       <CreateContent updateTable={showContent}/>
-            <ul>
-                <br/>
+            <ul className="list-group">
+                
                {items.map((item, key) => {
-                        return <li key={key}>{item.owner_id} - {item.content_url} - {domain}/{item.shortened_url}</li>
-                    })}
+                        return  <div className="list-group-item list-group-item-action">
+                                    <div className="" key={key}> 
+                                    <div className="row justify-content-between">
+                                    <div className='col-auto '>{item.content_url}</div> 
+                                    <div className='col-auto'>
+                                    <span className="badge bg-secondary">{item.click_count} clicks</span> </div> 
+                                    </div>
+                                    <div className='row'>
+                                    <div className='col-auto'>
+                                    <div className="btn-group btn-group-sm" role="group">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text" id="btnGroupAddon">ID {item.id}</div>
+                                        </div>
+                                        <button type="button" className="btn btn-outline-primary text-truncate"  onClick={ () => copyToClipboard(item.shortened_url)} data-bs-toggle="tooltip" data-bs-placement="left" title="Copy">{domain}/{item.shortened_url} </button>
+                                        <button type="button" className="btn btn-outline-primary" onClick={() => window.open(`https://${domain}/g/${item.shortened_url}`, '_blank').focus()}>Visit</button>
+                                        <button type="button" className="btn btn-outline-primary" onClick={() => editItem()}>Edit</button>
+                                        </div>
+                                        </div> 
+                                        </div>
+                                    </div> </div>
+                                
+                    }).reverse()}
                
             </ul>
-            
+            </div>
+            {/* </div> */}
+            </div>
         </div>
 
     )

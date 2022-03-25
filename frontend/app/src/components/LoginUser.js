@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { Navigate, } from "react-router-dom";
 import { AuthContext } from "../App";
+
+import { Outlet, Link } from "react-router-dom";
 function LoginUser() {
     const { dispatch } = React.useContext(AuthContext);
     const [inputs, setInputs] = useState({"username":"","password":"", "grant_type": "password"});
@@ -39,22 +41,26 @@ function LoginUser() {
     }
     return (
         <div>
-            <span> Login user</span>
-            {/* {token && (
-          <Navigate to="/dashboard" replace={true} /> */}
-        
-            <form onSubmit={handleSubmit}>
-                <label>
-                Username:
-                <input type="text" name="username" onChange={handleInputChange} value={inputs.username}/>
-                </label><br/>
-                <label>
-                Password:
-                <input type="text" name="password" onChange={handleInputChange} value={inputs.password}/>
-                </label><br/>
-                <button type="submit">Submit</button>   
-            </form> 
-              
+            <div className="auth-wrapper">
+                <div className="auth-inner">
+                    <form onSubmit={handleSubmit}>
+                        <h3>Login</h3>
+                        <div className="form-group">
+                            <label>Username:</label>
+                            <input type="text" className="form-control" placeholder="Enter username" name="username" onChange={handleInputChange} value={inputs.username}/>
+                        </div>
+                        <div className="form-group">
+                            <label>Password:</label>
+                            <input type="password" className="form-control" placeholder="Enter password"  name="password" onChange={handleInputChange} value={inputs.password}/>
+                        </div>
+                        <button type="submit" className="btn btn-primary btn-block mt-2">Login</button>
+                    </form>
+                    <p className="forgot-password text-right">
+                    <span> Dont have an account? </span>
+                    <Link to="/signup" >Signup</Link>
+                    </p>
+                </div>
+            </div>
         </div>
     )
 

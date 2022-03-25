@@ -9,7 +9,6 @@ import LoginUser from './components/LoginUser';
 import LogoutUser from './components/LogoutUser';
 import Dashboard from './components/Dashboard';
 // import NewEmployee from './components/test';
-import Button from 'react-bootstrap/Button';
 export const AuthContext = React.createContext();
 
 
@@ -55,7 +54,6 @@ function App() {
     >
     <div className="App">
       
-    <Button  >Button #1</Button>
       {}
       {/* <Link to="/signup" >Signup</Link> |{" "}
       {state ? (

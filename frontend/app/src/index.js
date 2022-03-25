@@ -3,7 +3,11 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
+import $ from 'jquery';
+import Popper from 'popper.js';
+import 'bootstrap/dist/js/bootstrap.bundle.min';
+
 import {
   BrowserRouter,
   Routes,
@@ -18,11 +22,12 @@ ReactDOM.render(
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<App />} >
-        <Route path="signup" element={<RegisterUser />} />
-        <Route path="login" element={<LoginUser />} />
+        
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="logout" element={<LogoutUser />} />
         </Route>
+        <Route path="login" element={<LoginUser />} />
+        <Route path="signup" element={<RegisterUser />} />
         {/* <Route path="invoices" element={<Invoices />} /> */}
       </Routes>
     </BrowserRouter>
