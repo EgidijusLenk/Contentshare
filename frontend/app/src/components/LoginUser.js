@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Navigate, } from "react-router-dom";
+import { useNavigate, } from "react-router-dom";
 import { AuthContext } from "../App";
 
 import { Outlet, Link } from "react-router-dom";
@@ -8,6 +8,7 @@ function LoginUser() {
     const { dispatch } = React.useContext(AuthContext);
     const [inputs, setInputs] = useState({"username":"","password":"", "grant_type": "password"});
     const [token, setToken] = useState("");
+    let navigate = useNavigate();
     function handleSubmit(event) {
         const headers = {
             'Content-accept': 'application/json',
@@ -15,7 +16,7 @@ function LoginUser() {
             'accept': 'application/json',
           }
         event.preventDefault();
-        console.log(`${JSON.stringify(inputs)}`)
+        // console.log(`${JSON.stringify(inputs)}`)
         const loginFormData = new FormData();
         loginFormData.append("username", inputs.username)
         loginFormData.append("password", inputs.password)
@@ -25,19 +26,17 @@ function LoginUser() {
             dispatch({
                 type: "LOGIN",
                 payload: res.data
-            })
+            });
+            navigate("/dashboard");
         })
-    
-        
         .catch(err => alert(`${JSON.stringify(err.response.data.detail)}`))
-        //gotto redirect user to dashboard
     }
     function handleInputChange(event) {
         const name = event.target.name;
         const value = event.target.value;
         setInputs(values => ({...values, [name]: value}))
-        console.log(`${event.target.value} zzzzzz`)
-        console.log(`${JSON.stringify(inputs)} aaaaaa`)
+        // console.log(`${event.target.value} zzzzzz`)
+        // console.log(`${JSON.stringify(inputs)} aaaaaa`)
     }
     return (
         <div>

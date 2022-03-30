@@ -43,7 +43,7 @@ function RegisterUser() {
                         <button type="submit" className="btn btn-primary btn-block mt-2">Register</button>
                         <p className="forgot-password text-right">
                         <span> Already have an account? </span>
-                        <Link to="/" >Login</Link>
+                        <Link to="/login" >Login</Link>
                         </p>
                     </form>
                 </div>

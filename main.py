@@ -60,6 +60,10 @@ async def create_content(item: schemas.ContentCreate, db: Session = Depends(get_
     item.content_metadata = get_metadata(item.content_url)
     return crud.create_user_item(db=db, item=item)
 
+@app.patch("/content/{item_id}", response_model=schemas.Content)
+async def update_item(item_id: str, item: schemas.ContentUpdate, db: Session = Depends(get_db), user: schemas.UserRead = Depends(get_current_user)):
+    return crud.update_item(item_id, item, db, user)
+
 #return content data prelander
 @app.get("/g/{unique_string}", response_class=HTMLResponse)
 async def prelander(request: Request, unique_string: str, db: Session = Depends(get_db)):
@@ -71,8 +75,3 @@ async def prelander(request: Request, unique_string: str, db: Session = Depends(
     "backbutton_url": content.backbutton_url,
     "display_ad_url": content.display_ad_url
     })
-
-@app.patch("/content/{item_id}", response_model=schemas.Content)
-async def update_item(item_id: str, item: schemas.ContentUpdate, db: Session = Depends(get_db), user: schemas.UserRead = Depends(get_current_user)):
-    return crud.update_item(item_id, item, db, user)
-

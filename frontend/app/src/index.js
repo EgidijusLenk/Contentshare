@@ -7,6 +7,8 @@ import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import $ from 'jquery';
 import Popper from 'popper.js';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
+import { ChakraProvider } from '@chakra-ui/react'
+
 
 import {
   BrowserRouter,
@@ -19,18 +21,20 @@ import Dashboard from './components/Dashboard';
 import LogoutUser from './components/LogoutUser';
 ReactDOM.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<App />} >
-        
-        <Route path="dashboard" element={<Dashboard />} />
-        <Route path="logout" element={<LogoutUser />} />
-        </Route>
-        <Route path="login" element={<LoginUser />} />
-        <Route path="signup" element={<RegisterUser />} />
-        {/* <Route path="invoices" element={<Invoices />} /> */}
-      </Routes>
-    </BrowserRouter>
+    <ChakraProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<App />} >
+          
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="logout" element={<LogoutUser />} />
+          <Route path="login" element={<LoginUser />} />
+          <Route path="signup" element={<RegisterUser />} />
+          </Route>
+          {/* <Route path="invoices" element={<Invoices />} /> */}
+        </Routes>
+      </BrowserRouter>
+    </ChakraProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

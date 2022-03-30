@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
-import { Outlet, Link } from "react-router-dom";
+import { Outlet, Link, useLocation } from "react-router-dom";
 import React, { useState,  } from 'react';
 // import axios from 'axios';
 // import PersonList from './components/PersonList';
@@ -8,9 +8,11 @@ import RegisterUser from './components/RegisterUser';
 import LoginUser from './components/LoginUser';
 import LogoutUser from './components/LogoutUser';
 import Dashboard from './components/Dashboard';
+import TopNav from './components/TopNav';
+import Hello from './components/Hello';
 // import NewEmployee from './components/test';
 export const AuthContext = React.createContext();
-
+window.bootstrap = require('bootstrap/dist/js/bootstrap.bundle.js');
 
 const initialState = {
   isAuthenticated: false,
@@ -23,7 +25,7 @@ const reducer = (state, action) => {
     case "LOGIN":
       localStorage.setItem("token", action.payload.access_token);
       localStorage.setItem("user", action.payload.user);
-      console.log(`token: ${action.payload.access_token} user: ${action.payload.user}`)
+      // console.log(`token: ${action.payload.access_token} user: ${action.payload.user}`)
       return {
         ...state,
         isAuthenticated: true,
@@ -44,6 +46,7 @@ const reducer = (state, action) => {
 
 function App() {
   const [state, dispatch] = React.useReducer(reducer, initialState);
+  let location = useLocation();
 
   return (
     <AuthContext.Provider
@@ -53,16 +56,11 @@ function App() {
       }}
     >
     <div className="App">
-      
-      {}
-      {/* <Link to="/signup" >Signup</Link> |{" "}
-      {state ? (
-          <Link to="/logout" >Logout</Link>
-        ) : <Link to="/login" >Login</Link>}
-       */}
-      <br/>
-      {!state.isAuthenticated ? <LoginUser /> : <Dashboard />}
-
+      <TopNav authState={state} />
+      {/* <br/>Authenticated? {state.isAuthenticated ? "yes" : "no"} */}
+      {/* <Sidebar authState={state.isAuthenticated}/> */}
+      {/* {!state.isAuthenticated ? <Hello /> : <Dashboard />} */}
+      {location.pathname === "/" ? <Hello /> : ""}
 
       <Outlet />
     </div>
