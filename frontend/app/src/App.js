@@ -10,6 +10,10 @@ import LogoutUser from './components/LogoutUser';
 import Dashboard from './components/Dashboard';
 import TopNav from './components/TopNav';
 import Hello from './components/Hello';
+import {
+  Container,
+  Box,
+} from '@chakra-ui/react';
 // import NewEmployee from './components/test';
 export const AuthContext = React.createContext();
 window.bootstrap = require('bootstrap/dist/js/bootstrap.bundle.js');
@@ -49,6 +53,7 @@ function App() {
   let location = useLocation();
 
   return (
+<Box w='100%'  bg='gray.50' >
     <AuthContext.Provider
       value={{
         state,
@@ -65,6 +70,7 @@ function App() {
       <Outlet />
     </div>
     </AuthContext.Provider>
+    </Box>
   );
 }
 

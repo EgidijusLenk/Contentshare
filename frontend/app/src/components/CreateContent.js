@@ -1,45 +1,242 @@
-import React, { useState,  } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import {
+  Container,
+  Box,
+  HStack,
+  VStack,
+  Flex,
+  Text,
+  IconButton,
+  Button,
+  Stack,
+  Collapse,
+  Icon,
+  Link,
+  Popover,
+  GridItem,
+  Grid,
+  ButtonGroup,
+  Heading,
+  Spacer,
+  Input,
+  Center,
 
+  AccordionItem,
+  AccordionButton,
+  AccordionPanel,
+  FormControl,
+  FormLabel,
+  FormErrorMessage,
+  FormHelperText,
+
+  Accordion,
+  PopoverTrigger,
+  PopoverContent,
+  useColorModeValue,
+  useBreakpointValue,
+  useDisclosure,
+  useToast,
+} from '@chakra-ui/react';
+import {
+  HamburgerIcon,
+  CloseIcon,
+  ChevronDownIcon,
+  ChevronRightIcon,
+  SunIcon,
+} from '@chakra-ui/icons';
 function CreateContent({updateTable}) {
-    const [content_url, setContenturl] = useState("");
-    const [inputs, setInputs] = useState({"content_url":"","backbutton_url":"", "display_ad_url": ""});
-    const headers = {
-        'Content-Type': 'application/json',
-        'accept': 'application/json',
-        'Authorization': `Bearer`
-      }
-      function handleSubmit(event) {
-        
-        headers["Authorization"] = `Bearer ${localStorage.getItem("token")}`  
-        event.preventDefault();
-        axios.post("http://localhost:8000/content", JSON.stringify(inputs), {headers: headers})
-        .then(function (res) {
-          alert(`Content created, short link: ${res.data.shortened_url}`);
-          document.getElementById('closeCreateItemModal').click();
-      })
-        .then(updateTable)
-        .catch(err => alert(`${JSON.stringify(err.response.data.detail)}`))  
-      }
-      function handleInputChange(event) {
-        const name = event.target.name;
-        const value = event.target.value;
-        setInputs(values => ({...values, [name]: value}))
-        // console.log(`${event.target.value} zzzzzz`)
-        // console.log(`${JSON.stringify(inputs)} aaaaaa`)
+  const [content_url, setContenturl] = useState("");
+  const [intialValues, setInputs] = useState({"content_url":"","backbutton_url":"", "display_ad_url": ""});
+  const [formValues, setFormValues] = useState(intialValues);
+  const [formErrors, setFormErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const headers = {
+      'Content-Type': 'application/json',
+      'accept': 'application/json',
+      'Authorization': `Bearer`
     }
+    function submit() {
+      headers["Authorization"] = `Bearer ${localStorage.getItem("token")}`  
+      axios.post("http://localhost:8000/content", JSON.stringify(formValues), {headers: headers})
+      .then(function (res) {
+        alert(`Content created, short link: ${res.data.shortened_url}`);
+        document.getElementById('closeCreateItemModal').click();
+    })
+      .then(updateTable)
+      .catch(err => alert(`${JSON.stringify(err.response.data.detail)}`))  
+    }
+
+      //input change handler
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormValues({ ...formValues, [name]: value });
+  };
+
+  //form submission handler
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setFormErrors(validate(formValues));
+    setIsSubmitting(true);
+  };
+
+  //form validation handler
+  const validate = (values) => {
+    let errors = {};
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
+
+    // if (!values.email) {
+    //   errors.email = "Cannot be blank";
+    // } else if (!regex.test(values.email)) {
+    //   errors.email = "Invalid email format";
+    // }
+
+    if (!values.content_url) {
+      errors.content_url = "Content url is required";
+    } else if (values.content_url.length < 5) {
+      errors.content_url = "Are you sure it is a valid url?";
+    }
+
+    return errors;
+  };
+
+  useEffect(() => {
+    if (Object.keys(formErrors).length === 0 && isSubmitting) {
+      submit();
+    }
+  }, [formErrors]);
+
     return (
-        <div >
-            
-     <div className='row justify-content-start pt-2 pb-2'>
-       <div className='col-auto'>
-<button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createItemModal">
-  Add new
-</button>
-       </div>       
-       </div>
+        <>
+            {Object.keys(formErrors).length === 0 && isSubmitting && (
+        <span className="success-msg">Form submitted successfully</span>
+      )}
 
 
+       <VStack  spacing='24px' pb={2} align='stretch' >
+         <Box borderRadius={7} bg='gray.50' boxShadow={'2xl'} borderLeftWidth={7} borderLeftColor="pink.300"
+                    >
+                      <Container m={1}>
+
+                      <form onSubmit={handleSubmit} noValidate>
+                      <Flex
+      // minH={'100vh'}
+      align={'center'}
+      justify={'center'}
+      
+      bg={useColorModeValue('gray.50', 'gray.800')}
+      >
+      <Stack
+        spacing={4}
+        w={'full'}
+        maxW={'md'}
+        // bg={useColorModeValue('white', 'gray.700')}
+        rounded={'xl'}
+        // boxShadow={'lg'}
+        p={6}
+        my={1}>
+          <Text align="left" fontSize={{ base: 'xl', md: 'xl' }}>
+          Create new content link
+        </Text>
+        <FormControl isInvalid={formErrors.content_url} id="content_url" isRequired>
+          <FormLabel mb={0} fontWeight="normal">Content url</FormLabel>
+          <Input
+          id="content_url" 
+          name="content_url"
+          value={formValues.content_url}
+          onChange={handleChange}
+          bg={useColorModeValue('white', 'gray.700')}
+            placeholder="https://recipes.com/freshbuns"
+            _placeholder={{ color: 'gray.500' }}
+            type="text"
+          />
+          <FormErrorMessage>{formErrors.content_url}</FormErrorMessage>
+        </FormControl>
+        <FormControl id="backbutton_url" >
+          <FormLabel mb={0} fontWeight="normal">Backbutton url</FormLabel>
+          <Input 
+          id="backbutton_url" 
+          name="backbutton_url"
+          value={formValues.backbutton_url}
+          onChange={handleChange}
+          bg={useColorModeValue('white', 'gray.700')}
+            placeholder="https://popads.com/affid=123456"
+            _placeholder={{ color: 'gray.500' }}
+            type="text"
+          />
+        </FormControl>
+        <FormControl id="display_ad_url" >
+          <FormLabel mb={0} fontWeight="normal">Display ad url</FormLabel>
+          <Input 
+          id="display_ad_url" 
+          name="display_ad_url"
+          value={formValues.display_ad_url}
+          onChange={handleChange}
+          bg={useColorModeValue('white', 'gray.700')}
+            placeholder="https://displayads.com/affid=123456"
+            _placeholder={{ color: 'gray.500' }}
+            type="text"
+          />
+        </FormControl>
+        <Stack spacing={6} direction={['column', 'row']}>
+          <Button 
+                          display={{ base: 'none', md: 'inline-flex' }}
+                          fontSize={'sm'}
+                          fontWeight={600}
+                          color={'white'}
+                          bg={'pink.300'}
+                          w="full"
+                          _hover={{
+                            bg: 'pink.200',
+                          }}>
+            Cancel
+          </Button>
+          <Button 
+                          display={{ base: 'none', md: 'inline-flex' }}
+                          fontSize={'md'}
+                          fontWeight={600}
+                          color={'white'}
+                          bg={'pink.400'}
+                          w="full"
+                          _hover={{
+                            bg: 'pink.300',
+                          }}
+                        type='submit'>
+            Create new content
+          </Button>
+        </Stack>
+      </Stack>
+    </Flex>
+    </form>
+                      </Container>
+         </Box>
+              </VStack>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{/* 
 <div className="modal fade" id="createItemModal" tabIndex="-1" aria-labelledby="createItemModalLabel" aria-hidden="true">
   <div className="modal-dialog">
     <div className="modal-content">
@@ -75,14 +272,14 @@ function CreateContent({updateTable}) {
             </form>
     </div>
   </div>
-</div>
+</div> */}
 
 
 
 
 
 
-        </div>
+        </>
     )
 }
 
