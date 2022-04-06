@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
   Container,
   Box,
@@ -21,7 +21,6 @@ import {
   Spacer,
   Input,
   Center,
-
   AccordionItem,
   AccordionButton,
   AccordionPanel,
@@ -29,7 +28,6 @@ import {
   FormLabel,
   FormErrorMessage,
   FormHelperText,
-
   Accordion,
   PopoverTrigger,
   PopoverContent,
@@ -37,37 +35,53 @@ import {
   useBreakpointValue,
   useDisclosure,
   useToast,
-} from '@chakra-ui/react';
+} from "@chakra-ui/react";
 import {
   HamburgerIcon,
   CloseIcon,
   ChevronDownIcon,
   ChevronRightIcon,
   SunIcon,
-} from '@chakra-ui/icons';
-function CreateContent({updateTable}) {
+} from "@chakra-ui/icons";
+function CreateContent({ showContent }) {
   const [content_url, setContenturl] = useState("");
-  const [intialValues, setInputs] = useState({"content_url":"","backbutton_url":"", "display_ad_url": ""});
+  const [intialValues, setInputs] = useState({
+    content_url: "",
+    backbutton_url: "",
+    display_ad_url: "",
+  });
   const [formValues, setFormValues] = useState(intialValues);
   const [formErrors, setFormErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const toast = useToast();
   const headers = {
-      'Content-Type': 'application/json',
-      'accept': 'application/json',
-      'Authorization': `Bearer`
-    }
-    function submit() {
-      headers["Authorization"] = `Bearer ${localStorage.getItem("token")}`  
-      axios.post("http://localhost:8000/content", JSON.stringify(formValues), {headers: headers})
+    "Content-Type": "application/json",
+    accept: "application/json",
+    Authorization: `Bearer`,
+  };
+  function submit() {
+    headers["Authorization"] = `Bearer ${localStorage.getItem("token")}`;
+    axios
+      .post("http://localhost:8000/content", JSON.stringify(formValues), {
+        headers: headers,
+      })
       .then(function (res) {
-        alert(`Content created, short link: ${res.data.shortened_url}`);
-        document.getElementById('closeCreateItemModal').click();
-    })
-      .then(updateTable)
-      .catch(err => alert(`${JSON.stringify(err.response.data.detail)}`))  
-    }
+        toast({
+          title: "Content created",
+          description: `Short link: ${res.data.shortened_url}`,
+          status: "success",
+          duration: 10000,
+          isClosable: true,
+        });
+        showContent();
+        setInterval(() => {
+          setIsSubmitting(false);
+        }, 3000);
+      })
+      .catch((err) => alert(`${JSON.stringify(err.response.data.detail)}`));
+  }
 
-      //input change handler
+  //input change handler
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormValues({ ...formValues, [name]: value });
@@ -106,137 +120,119 @@ function CreateContent({updateTable}) {
     }
   }, [formErrors]);
 
-    return (
-        <>
-            {Object.keys(formErrors).length === 0 && isSubmitting && (
-        <span className="success-msg">Form submitted successfully</span>
-      )}
-
-
-       <VStack  spacing='24px' pb={2} align='stretch' >
-         <Box borderRadius={7} bg='gray.50' boxShadow={'2xl'} borderLeftWidth={7} borderLeftColor="pink.300"
+  return (
+    <>
+      <VStack spacing="24px" pb={2} align="stretch">
+        <Box
+          borderRadius={7}
+          bg="gray.50"
+          boxShadow={"2xl"}
+          borderLeftWidth={7}
+          borderLeftColor="pink.300"
+        >
+          <Container m={1}>
+            <form onSubmit={handleSubmit} noValidate>
+              <Flex
+                // minH={'100vh'}
+                align={"center"}
+                justify={"center"}
+                bg={useColorModeValue("gray.50", "gray.800")}
+              >
+                <Stack
+                  spacing={4}
+                  w={"full"}
+                  maxW={"md"}
+                  // bg={useColorModeValue('white', 'gray.700')}
+                  rounded={"xl"}
+                  // boxShadow={'lg'}
+                  p={6}
+                  my={1}
+                >
+                  <Text align="left" fontSize={{ base: "xl", md: "xl" }}>
+                    Create new content link
+                  </Text>
+                  <FormControl
+                    isInvalid={formErrors.content_url}
+                    id="content_url"
+                    isRequired
+                  >
+                    <FormLabel mb={0} fontWeight="normal">
+                      Content url
+                    </FormLabel>
+                    <Input
+                      id="content_url"
+                      name="content_url"
+                      value={formValues.content_url}
+                      onChange={handleChange}
+                      bg={useColorModeValue("white", "gray.700")}
+                      placeholder="https://recipes.com/freshbuns"
+                      _placeholder={{ color: "gray.500" }}
+                      type="text"
+                    />
+                    <FormErrorMessage>
+                      {formErrors.content_url}
+                    </FormErrorMessage>
+                  </FormControl>
+                  <FormControl id="backbutton_url">
+                    <FormLabel mb={0} fontWeight="normal">
+                      Backbutton url
+                    </FormLabel>
+                    <Input
+                      id="backbutton_url"
+                      name="backbutton_url"
+                      value={formValues.backbutton_url}
+                      onChange={handleChange}
+                      bg={useColorModeValue("white", "gray.700")}
+                      placeholder="https://popads.com/affid=123456"
+                      _placeholder={{ color: "gray.500" }}
+                      type="text"
+                    />
+                  </FormControl>
+                  <FormControl id="display_ad_url">
+                    <FormLabel mb={0} fontWeight="normal">
+                      Display ad url
+                    </FormLabel>
+                    <Input
+                      id="display_ad_url"
+                      name="display_ad_url"
+                      value={formValues.display_ad_url}
+                      onChange={handleChange}
+                      bg={useColorModeValue("white", "gray.700")}
+                      placeholder="https://displayads.com/affid=123456"
+                      _placeholder={{ color: "gray.500" }}
+                      type="text"
+                    />
+                  </FormControl>
+                  <Stack spacing={6} direction={["column", "row"]}>
+                    <Button
+                      isLoading={isSubmitting}
+                      display={{ base: "none", md: "inline-flex" }}
+                      fontSize={"md"}
+                      fontWeight={600}
+                      color={"white"}
+                      bg={"pink.400"}
+                      w="full"
+                      _hover={{
+                        bg: "pink.300",
+                      }}
+                      type="submit"
                     >
-                      <Container m={1}>
+                      Create new content
+                    </Button>
+                  </Stack>
+                  {Object.keys(formErrors).length === 0 && isSubmitting && (
+                    <span className="success-msg">
+                      Form submitted successfully
+                    </span>
+                  )}
+                </Stack>
+              </Flex>
+            </form>
+          </Container>
+        </Box>
+      </VStack>
 
-                      <form onSubmit={handleSubmit} noValidate>
-                      <Flex
-      // minH={'100vh'}
-      align={'center'}
-      justify={'center'}
-      
-      bg={useColorModeValue('gray.50', 'gray.800')}
-      >
-      <Stack
-        spacing={4}
-        w={'full'}
-        maxW={'md'}
-        // bg={useColorModeValue('white', 'gray.700')}
-        rounded={'xl'}
-        // boxShadow={'lg'}
-        p={6}
-        my={1}>
-          <Text align="left" fontSize={{ base: 'xl', md: 'xl' }}>
-          Create new content link
-        </Text>
-        <FormControl isInvalid={formErrors.content_url} id="content_url" isRequired>
-          <FormLabel mb={0} fontWeight="normal">Content url</FormLabel>
-          <Input
-          id="content_url" 
-          name="content_url"
-          value={formValues.content_url}
-          onChange={handleChange}
-          bg={useColorModeValue('white', 'gray.700')}
-            placeholder="https://recipes.com/freshbuns"
-            _placeholder={{ color: 'gray.500' }}
-            type="text"
-          />
-          <FormErrorMessage>{formErrors.content_url}</FormErrorMessage>
-        </FormControl>
-        <FormControl id="backbutton_url" >
-          <FormLabel mb={0} fontWeight="normal">Backbutton url</FormLabel>
-          <Input 
-          id="backbutton_url" 
-          name="backbutton_url"
-          value={formValues.backbutton_url}
-          onChange={handleChange}
-          bg={useColorModeValue('white', 'gray.700')}
-            placeholder="https://popads.com/affid=123456"
-            _placeholder={{ color: 'gray.500' }}
-            type="text"
-          />
-        </FormControl>
-        <FormControl id="display_ad_url" >
-          <FormLabel mb={0} fontWeight="normal">Display ad url</FormLabel>
-          <Input 
-          id="display_ad_url" 
-          name="display_ad_url"
-          value={formValues.display_ad_url}
-          onChange={handleChange}
-          bg={useColorModeValue('white', 'gray.700')}
-            placeholder="https://displayads.com/affid=123456"
-            _placeholder={{ color: 'gray.500' }}
-            type="text"
-          />
-        </FormControl>
-        <Stack spacing={6} direction={['column', 'row']}>
-          <Button 
-                          display={{ base: 'none', md: 'inline-flex' }}
-                          fontSize={'sm'}
-                          fontWeight={600}
-                          color={'white'}
-                          bg={'pink.300'}
-                          w="full"
-                          _hover={{
-                            bg: 'pink.200',
-                          }}>
-            Cancel
-          </Button>
-          <Button 
-                          display={{ base: 'none', md: 'inline-flex' }}
-                          fontSize={'md'}
-                          fontWeight={600}
-                          color={'white'}
-                          bg={'pink.400'}
-                          w="full"
-                          _hover={{
-                            bg: 'pink.300',
-                          }}
-                        type='submit'>
-            Create new content
-          </Button>
-        </Stack>
-      </Stack>
-    </Flex>
-    </form>
-                      </Container>
-         </Box>
-              </VStack>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-{/* 
+      {/* 
 <div className="modal fade" id="createItemModal" tabIndex="-1" aria-labelledby="createItemModalLabel" aria-hidden="true">
   <div className="modal-dialog">
     <div className="modal-content">
@@ -273,17 +269,8 @@ function CreateContent({updateTable}) {
     </div>
   </div>
 </div> */}
-
-
-
-
-
-
-        </>
-    )
+    </>
+  );
 }
 
-
-
-
-export default CreateContent
+export default CreateContent;

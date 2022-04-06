@@ -3,6 +3,7 @@ from sqlalchemy.orm import relationship
 
 from database import Base
 
+
 class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, index=True)
@@ -12,6 +13,7 @@ class User(Base):
     active = Column(Boolean, default=True)
 
     contents = relationship("Content", back_populates="owner")
+
 
 class Content(Base):
     __tablename__ = "contents"
@@ -26,16 +28,3 @@ class Content(Base):
     active = Column(Boolean, default=True)
 
     owner = relationship("User", back_populates="contents")
-
-
-
-
-
-
-
-
-
-
-
-
-

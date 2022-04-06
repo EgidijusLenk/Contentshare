@@ -3,7 +3,8 @@ from typing import List, Optional
 
 from pydantic import BaseModel
 
-#Content schemas:
+# Content schemas:
+
 
 class Content(BaseModel):
     id: Optional[int] = None
@@ -13,11 +14,13 @@ class Content(BaseModel):
     shortened_url: str
     backbutton_url: Optional[str] = None
     display_ad_url: Optional[str] = None
-    click_count: Optional[int] = None #need function to update count when receives traffic
+    # need function to update count when receives traffic
+    click_count: Optional[int] = None
     active: bool
 
     class Config:
         orm_mode = True
+
 
 class ContentCreate(BaseModel):
     owner_id: Optional[int] = None
@@ -27,26 +30,30 @@ class ContentCreate(BaseModel):
     backbutton_url: Optional[str] = None
     display_ad_url: Optional[str] = None
 
+
 class ContentUpdate(BaseModel):
     content_url: Optional[str] = None
     backbutton_url: Optional[str] = None
     display_ad_url: Optional[str] = None
     active: Optional[bool] = None
+
     class Config:
         orm_mode = True
 
 
-class ContentState(BaseModel): #got to check if current user is creator if this content
+class ContentState(BaseModel):  # got to check if current user is creator if this content
     active: bool
 
-#User schemas:
+# User schemas:
+
 
 class UserCreate(BaseModel):
     user: str
     email: str
     password: str
 
-class UserRead(BaseModel): 
+
+class UserRead(BaseModel):
     id: int
     user: Optional[str] = None
     email: str
@@ -58,12 +65,11 @@ class UserRead(BaseModel):
         orm_mode = True
 
 
-class UserUpdate(BaseModel): #for use with @app.patch method
+class UserUpdate(BaseModel):  # for use with @app.patch method
     user: Optional[str] = None
     email: Optional[str] = None
     password: Optional[str] = None
 
+
 class UserState(BaseModel):
     active: bool
-    
-
