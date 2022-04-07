@@ -144,4 +144,4 @@ dmypy.json
 .pyre/
 
 #alembic ini
-alembic.ini
+/backend/alembic.ini
