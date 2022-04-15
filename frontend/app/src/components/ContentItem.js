@@ -50,7 +50,9 @@ export default function ContentItem(item) {
 
   const domain = window.location.hostname;
   const toast = useToast();
-
+  const visitLink = (e) => {
+    window.open(`https://${domain}/g/${e}`, "blank");
+  };
   function copyToClipboard(e) {
     console.log(`${domain}/${e}`);
     navigator.clipboard.writeText(`https://${domain}/g/${e}`);
@@ -108,6 +110,7 @@ export default function ContentItem(item) {
                 {domain}/{item.shortened_url}
               </Button>
               <Button
+                onClick={() => visitLink(item.shortened_url)}
                 bg="pink.50"
                 mr="-px"
                 _hover={{ color: "white", bg: "pink.300" }}
@@ -141,7 +144,7 @@ export default function ContentItem(item) {
                   p={6}
                   my={1}
                 >
-                  <FormControl id="userName" isRequired>
+                  <FormControl id="content_url" isRequired>
                     <FormLabel>Content url</FormLabel>
                     <Input
                       bg={useColorModeValue("white", "gray.700")}

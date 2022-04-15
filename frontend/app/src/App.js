@@ -2,15 +2,12 @@ import logo from "./logo.svg";
 import "./App.css";
 import { Outlet, Link, useLocation } from "react-router-dom";
 import React, { useState } from "react";
-// import axios from 'axios';
-// import PersonList from './components/PersonList';
 import RegisterUser from "./components/RegisterUser";
 import LoginUser from "./components/LoginUser";
 import Dashboard from "./components/Dashboard";
 import TopNav from "./components/TopNav";
 import Hello from "./components/Hello";
 import { Container, Box } from "@chakra-ui/react";
-// import NewEmployee from './components/test';
 export const AuthContext = React.createContext();
 window.bootstrap = require("bootstrap/dist/js/bootstrap.bundle.js");
 
